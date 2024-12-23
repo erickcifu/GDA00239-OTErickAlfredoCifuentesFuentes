@@ -17,7 +17,7 @@ En este apartado se incluyen los endpoints y la información para poder realizar
 - Instalar dependencias: **npm install**
 - Realizar las configuraciones de conexión hacia la base de datos:
   - Desde el servidor en el gestor de base de datos, buscar la carpeta **security**, dentro de la carpeta dar clic izquierdo sobre la carpeta **login** y seleccionar la opción **New Login**
-  ![alt text](image-2.png)
+  
 
     Las configuraciones son las siguientes:
 
@@ -30,21 +30,21 @@ En este apartado se incluyen los endpoints y la información para poder realizar
        - User must change password at next login
     5. Seleccionar la base de datos del proyecto
    
-    ![alt text](image-3.png)
+    
 
   - Dentro de la misma ventana, en la opción **Server Roles** se deben seleccionar los siguientes roles para el usuario:
   
-    ![alt text](image-6.png)
+    
 
   - La opción **User Mapping** se debe ver de la siguiente manera:
-    ![alt text](image-7.png)
+    
 
   - En la herramienta **SQL Server Configuration Manager** asegurarse que el protocolo TCP/IP esté habilitado.
   
-    ![alt text](image-8.png)
+  
   - Asegurarse que el servicio **SQL Server** esté en estado **Running**
   
-    ![alt text](image-9.png)
+    
 
 - Iniciar el servidor: **npm run dev**
 
@@ -52,7 +52,7 @@ En este apartado se incluyen los endpoints y la información para poder realizar
 ## Entpoints disponibles
 ### Usuarios
 Para poder acceder a las funcionalidades, es necesario tener un usuario.
-![alt text](image-5.png)
+
 
 #### Registro
 - **POST http://localhost:3000/registro**: Crear un nuevo usuario.
@@ -87,7 +87,6 @@ Para poder acceder a las funcionalidades, es necesario tener un usuario.
 
 **NOTA:** Para los endpoint siguientes se necesita agregar el token recibido en el proceso de login dentro de los headers. e.g:
 
-![alt text](image.png)
 
 #### Obtener usuarios por ID
 - **GET http://localhost:3000/usuarios/{id}**: Obtener un usuario por su id.
