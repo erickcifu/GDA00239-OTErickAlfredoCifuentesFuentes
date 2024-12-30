@@ -3,9 +3,9 @@ const { autenticar } = require('../middleware/authMiddleware');
 const { obtenerCategoria, crearCategoria, ActualizarCategoria, desactivarCategoria } = require('../controllers/categoriaController');
 const router = express.Router();
 
-router.get('/:idCategoriaProducto?', obtenerCategoria);
-router.post('/', crearCategoria);
-router.put('/:idCategoriaProducto', ActualizarCategoria);
-router.delete('/:idCategoriaProducto', desactivarCategoria);
+router.get('/:idCategoriaProducto?', autenticar, obtenerCategoria);
+router.post('/', autenticar, crearCategoria);
+router.put('/:idCategoriaProducto', autenticar, ActualizarCategoria);
+router.delete('/:idCategoriaProducto', autenticar, desactivarCategoria);
 
 module.exports = router;

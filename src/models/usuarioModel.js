@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 
 const Usuario = sequelize.define('Usuario', {
     idUsuarios: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    rol_idRol: { type: DataTypes.INTEGER },
+    rol_idrol: { type: DataTypes.INTEGER },
     estados_idestado: { type: DataTypes.INTEGER },
     correoUsuaro: { type: DataTypes.STRING(45), allowNull: false },
     nombreCompletoUsuario: { type: DataTypes.STRING(100), allowNull: false },
@@ -43,7 +43,7 @@ Usuario.obtenerUsuarioPorEmail = async function (correoUsuaro) {
 
 Usuario.crearUsuario = async function (usuarioData) {
     const {
-        rol_idRol,
+        rol_idrol,
         estados_idestado,
         correoUsuaro,
         nombreCompletoUsuario,
@@ -57,7 +57,7 @@ Usuario.crearUsuario = async function (usuarioData) {
 
     await sequelize.query(
         `EXEC InsertarUsuario 
-            @p_rol_idRol = :rol_idrol,
+            @p_rol_idrol = :rol_idrol,
             @p_estados_idestado = :estados_idestado,
             @p_correoUsuario = :correoUsuaro,
             @p_nombreCompletoUsuario = :nombreCompletoUsuario,

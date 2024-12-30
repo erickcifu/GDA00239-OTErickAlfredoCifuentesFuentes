@@ -7,6 +7,8 @@ const authRoutes = require('./src/routes/authRoutes.js');
 const productoRoutes = require('./src/routes/productoRoutes.js');
 const clientesRoutes = require('./src/routes/clientesRoutes.js');
 const categoriaRoutes = require('./src/routes/categoriaRoutes.js');
+const rolRoutes = require('./src/routes/rolRoutes.js');
+const estadoRoutes = require('./src/routes/estadoRoutes.js');
 
 const app = express();
 
@@ -18,6 +20,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/productos', productoRoutes);
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/categoria', categoriaRoutes);
+app.use('/api/rol', rolRoutes);
+app.use('/api/estado', estadoRoutes);
 //console.log(app._router.stack.map(layer => layer.route));
 
 // Conectar a la base de datos
