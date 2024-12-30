@@ -53,6 +53,10 @@ const Producto = sequelize.define('Producto', {
             key: 'idestado',
         },
     },
+    fecha_creacion: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+    },
 }, {
     tableName: 'Productos',
     timestamps: false, 
