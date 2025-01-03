@@ -2,17 +2,17 @@ const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
 const sequelize = new Sequelize(
-    process.env.DB_NAME || "GDA00239-OT-ErickCifuentes", // Base de datos
-    process.env.DB_USER || "admin", // Usuario
-    process.env.DB_PASSWORD || "Proyecto@2024", // Contraseña
+    process.env.DB_NAME || "GDA00239-OT-ErickCifuentes", 
+    process.env.DB_USER || "admin", 
+    process.env.DB_PASSWORD || "Proyecto@2024",
     {
-        host: process.env.DB_SERVER || "localhost", // Servidor
+        host: process.env.DB_SERVER || "localhost",
         dialect: 'mssql',
         dialectOptions: {
-            encrypt: true, // Si necesitas conexión encriptada
-            trustServerCertificate: true, // Permitir certificado autofirmado
+            encrypt: true,
+            trustServerCertificate: true, 
         },
-        logging: false, // Opcional, desactiva el log para consultas
+        logging: false,
     }
 );
 
