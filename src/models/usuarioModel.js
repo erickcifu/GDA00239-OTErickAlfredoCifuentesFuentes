@@ -28,6 +28,7 @@ Usuario.getUsuarioPorId = async function (idUsuarios = null) {
         }
     );
     return result;
+    
 };
 
 Usuario.obtenerUsuarioPorEmail = async function (correoUsuaro) {
