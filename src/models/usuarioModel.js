@@ -82,6 +82,11 @@ Usuario.crearUsuario = async function (usuarioData) {
 };
 
 Usuario.updateUsuario = async function (usuarioData) {
+    const { passwordUsuario } = usuarioData;
+    if (passwordUsuario) {
+        usuarioData.passwordUsuario = await bcrypt.hash(passwordUsuario, 10);
+    }
+    
     await sequelize.query(
         `EXEC ActualizarUsuarios 
             @p_idUsuarios = :idUsuarios,

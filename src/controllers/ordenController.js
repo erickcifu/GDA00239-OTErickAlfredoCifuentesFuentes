@@ -70,6 +70,9 @@ const crearOrden = async (req, res) => {
         res.status(201).json({ message: "Orden creada correctamente", nuevaOrden });
     } catch (error) {
         console.error("Error al crear la orden:", error.message);
+        if (error.message.includes("Stock insuficiente")) {
+            return res.status(409).json({ message: "Stock insuficiente para uno o más productos", error: error.message });
+        }
         res.status(500).json({ message: "Error al crear la orden", error: error.message });
     }
 };
@@ -109,9 +112,14 @@ const actualizarOrden = async (req, res) => {
         res.status(200).json({ message: "Orden actualizada correctamente", resultado });
     } catch (error) {
         console.error("Error al actualizar la orden:", error.message);
+
+        if (error.message.includes("Stock insuficiente")) {
+            return res.status(409).json({ message: "Stock insuficiente para uno o más productos", error: error.message });
+        }
         res.status(500).json({ message: "Error al actualizar la orden", error: error.message });
     }
 };
+
 
 const desactivarOrden = async (req, res) => {
     const { idOrden } = req.params;

@@ -54,7 +54,12 @@ const registro = async (req, res) => {
 
 const actualizarUsuario = async (req, res) => {
     try {
+        const { passwordUsuario } = req.body;
+        if (passwordUsuario) {
+            req.body.passwordUsuario = await bcrypt.hash(passwordUsuario, 10);
+        }
         await Usuario.updateUsuario(req.body);
+
         res.status(200).json({ message: 'Usuario actualizado correctamente.' });
     } catch (error) {
         console.error('Error al actualizar usuario:', error.message);
