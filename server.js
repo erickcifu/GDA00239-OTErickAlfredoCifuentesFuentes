@@ -16,6 +16,11 @@ const ordenRoutes = require('./src/routes/ordenRoutes.js');
 const app = express();
 
 app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3001', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true, 
+}));
 app.use(express.json());
 
 // Usar rutas
