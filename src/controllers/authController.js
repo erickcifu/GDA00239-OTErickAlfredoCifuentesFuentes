@@ -29,24 +29,13 @@ const login = async (req, res) => {
             return res.status(401).json({ message: 'Contraseña incorrecta.' });
         }
 
-        const roles = {
-            1: 'operador',
-            2: 'cliente',
-            3: 'admin',
-        };
-        console.log("roles: ", roles[usuario.rol_idRol])
         const token = generarToken(usuario);
-        const roleName = roles[usuario.rol_idRol] || 'desconocido'; 
-
-        res.status(200).json({ token, role: roleName });
+        res.status(200).json({ token });
     } catch (error) {
         console.error('Error al iniciar sesión:', error.message);
         res.status(500).json({ message: 'Error al iniciar sesión.', error: error.message });
     }
 };
-
-
-
 
 const registro = async (req, res) => {
     try {
@@ -74,7 +63,6 @@ const actualizarUsuario = async (req, res) => {
         res.status(500).json({ message: 'Error al actualizar usuario.', error: error.message });
     }
 };
-
 
 const desactivarUsuario = async (req, res) => {
     const { idUsuarios } = req.params;

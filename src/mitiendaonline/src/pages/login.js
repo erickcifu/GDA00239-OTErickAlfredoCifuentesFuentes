@@ -1,22 +1,29 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Box, Alert } from '@mui/material';
-import api from '../config/axios';
+import api, {obtenerRol} from '../config/axios';
 
 const Login = () => {
     const [correoUsuaro, setcorreoUsuaro] = useState('');
     const [passwordUsuario, setpasswordUsuario] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
-
+ const userRoles = obtenerRol();
     const handleSubmit = async (e) => {
         e.preventDefault();
         
         try {
             const response = await api.post('/auth/login', { correoUsuaro, passwordUsuario });
-            localStorage.setItem('token', response.data.token); 
+             
             setError('');
-            navigate('/home');
+            if (userRoles == 2) {
+              navigate('/home');
+            } else if (userRoles == 1) {
+              navigate('/homeOperador');
+            } else {
+              navigate('/');
+            }
+            localStorage.setItem('token', response.data.token);
         } catch (err) {
             setError(err.response ? err.response.data.message : 'Error al iniciar sesión');
         }

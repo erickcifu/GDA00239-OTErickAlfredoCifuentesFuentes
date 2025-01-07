@@ -1,4 +1,5 @@
 const { sequelize } = require('../config/dbConfig');
+const { verificarToken } = require('../config/tokenConfig');
 const Orden = require('../models/ordenModel.js');
 const OrdenDetalles = require('../models/ordDetModel.js');
 
@@ -124,7 +125,7 @@ const actualizarOrden = async (req, res) => {
 
 const desactivarOrden = async (req, res) => {
     const { idOrden } = req.params;
-    const { estados_idestado } = req.body;
+    const { estados_idestado } = req.query;
 
     try {
         await sequelize.query(
@@ -144,4 +145,27 @@ const desactivarOrden = async (req, res) => {
     }
 };
 
-module.exports = { obtenerOrdenCompleta, crearOrden, actualizarOrden, desactivarOrden, };
+const obtenerOrdenesUsuario = async (req, res) => {
+    const { idUsuario } = req.params; // Asegúrate de que idUsuario esté disponible
+
+    try {
+        const ordenes = await sequelize.query(
+            "EXEC obtenerOrdenesCliente @idUsuario = :idUsuario",
+            {
+                replacements: { idUsuario: idUsuario },
+                type: sequelize.QueryTypes.SELECT
+            }
+        );
+
+        if (!ordenes || ordenes.length === 0) {
+            return res.status(404).json({ message: "No se encontraron órdenes" });
+        }
+
+        return res.status(200).json(ordenes);
+    } catch (error) {
+        console.error("Error al obtener las órdenes del usuario:", error);
+        return res.status(500).json({ message: "Error al obtener las órdenes", error: error.message });
+    }
+};
+
+module.exports = { obtenerOrdenCompleta, crearOrden, actualizarOrden, desactivarOrden, obtenerOrdenesUsuario, };

@@ -6,7 +6,9 @@ import Login from '../src/pages/login';
 import Register from '../src/pages/register';
 import Carrito from './pages/carrito';
 import FinCompra from './pages/finalizarCompra';
-import OrdenesCliente from './pages/ordenesCliente'
+import OrdenesCliente from './pages/ordenesCliente';
+import HomeOperador from './pages/homeOp';
+
 const App = () => {
     return (
         <Router>
@@ -15,6 +17,7 @@ const App = () => {
                     <Route path="/" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/home" element={<Home />} />
+                    <Route path="/homeOperador" element={<HomeOperador />} />
                     <Route path="/carrito" element={<Carrito />} />
                     <Route path="/comprar" element={<FinCompra />} />
                     <Route path="/pedidos" element={<OrdenesCliente />} />

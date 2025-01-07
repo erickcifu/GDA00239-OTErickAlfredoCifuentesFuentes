@@ -12,11 +12,10 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CartProvider>
-      <App />
+        <App />
       </CartProvider>
     </ThemeProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

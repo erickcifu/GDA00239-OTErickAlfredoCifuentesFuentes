@@ -13,7 +13,7 @@ const autenticar = (req, res, next) => {
   }
 
   try {
-    const decoded = verificarToken(token);
+    const decoded = verificarToken(token, process.env.JWT_SECRET);
     req.user = decoded; 
    // console.log("Datos del usuario autenticado:", req.user);
     next();
