@@ -30,6 +30,17 @@ Usuario.getUsuarioPorId = async function (idUsuarios = null) {
     return result;
     
 };
+Usuario.getRolByUsuarioId = async function (idUsuarios) {
+    const result = await sequelize.query(
+        `SELECT rol_idrol FROM Usuarios WHERE idUsuarios = :idUsuarios`,
+        {
+            replacements: { idUsuarios },
+            type: QueryTypes.SELECT,
+        }
+    );
+    return result.length > 0 ? result[0].rol_idrol : null;
+};
+
 
 Usuario.obtenerUsuarioPorEmail = async function (correoUsuaro) {
     const result = await sequelize.query(

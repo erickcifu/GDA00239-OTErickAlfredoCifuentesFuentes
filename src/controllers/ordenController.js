@@ -20,8 +20,9 @@ const obtenerOrdenCompleta = async (req, res) => {
 
         if (idOrden) {
             const detalles = await sequelize.query(
-                `SELECT od.Orden_idOrden, od.Productos_idProductos, od.cantidadOD, od.precioOD, od.subtotalOD
+                `SELECT od.Orden_idOrden, od.Productos_idProductos, p.nombreProducto, od.cantidadOD, od.precioOD, od.subtotalOD
                  FROM OrdenDetalles od
+                 INNER JOIN Productos p ON od.Productos_idProductos = p.idProducto
                  WHERE od.Orden_idOrden = :idOrden`,
                 {
                     replacements: { idOrden },
