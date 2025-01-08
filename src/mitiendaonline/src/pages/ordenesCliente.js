@@ -1,137 +1,169 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Modal, Box, Typography, Paper } from '@mui/material';
-import api from '../config/axios';  // Suponiendo que tienes configurada una API para las solicitudes
-import { useNavigate } from 'react-router-dom';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Modal, Box, Typography, Paper, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+
+import api, {obtenerUsuario} from '../config/axios';  // Suponiendo que tienes configurada una API para las solicitudes
+import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '../components/layout';
 
 const OrdenesCliente = () => {
+  const { idUsuario } = useParams();
   const [ordenes, setOrdenes] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [ordenSeleccionada, setOrdenSeleccionada] = useState(null);
   const navigate = useNavigate();
 
   // Obtener las órdenes del usuario logueado
-  useEffect(() => {
+ 
     const fetchOrdenes = async () => {
       try {
-        const response = await api.get('/orden');  // Cambia la URL según corresponda
-        setOrdenes(response.data);
+        const idUsuario = obtenerUsuario();
+        const response = await api.get(`/orden/ordenesUsuario/${idUsuario}`);  // Cambia la URL si es necesario
+        setOrdenes(response.data);  
       } catch (error) {
-        console.error("Error al obtener las órdenes:", error);
+        setError('Error al obtener las ordenes del usuario');
+        console.error("Error al obtener las órdenes del usuario:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchOrdenes();
-  }, []);
+useEffect(() => {
+      fetchOrdenes();
+    }, [idUsuario]); 
 
-  // Abrir modal con detalles de la orden
+    if (loading) return <p>Cargando órdenes...</p>;
+    if (error) return <p>{error}</p>;
+
+    const cancelarOrden = async (idOrden) => {
+      try {
+        await api.delete(`/orden/${idOrden}?estados_idestado=5`);
+        fetchOrdenes(); 
+      } catch (error) {
+        console.error("Error al cancelar la orden:", error);
+      }
+    };
+
   const verDetalles = (orden) => {
     setOrdenSeleccionada(orden);
     setOpenModal(true);
   };
 
-  // Cerrar el modal
+  const handleConfirmCancel = (orden) => {
+    setOrdenSeleccionada(orden);
+    setOpenConfirmDialog(true);
+  };
+
+  const handleCloseConfirmDialog = () => {
+    setOpenConfirmDialog(false);
+  };
+
   const cerrarModal = () => {
     setOpenModal(false);
     setOrdenSeleccionada(null);
   };
 
-  // Cancelar orden
-  const cancelarOrden = async (idOrden) => {
-    try {
-      await api.delete(`/orden/${idOrden}/cancelar`);  // Cambia la URL según corresponda
-      setOrdenes(ordenes.filter(orden => orden.idOrden !== idOrden));  // Eliminar la orden de la lista
-      cerrarModal();
-    } catch (error) {
-      console.error("Error al cancelar la orden:", error);
-    }
-  };
-
   return (
     <Layout>
-    <div>
-      <Typography variant="h4" gutterBottom>Mis Órdenes</Typography>
-      
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>ID Orden</TableCell>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Dirección</TableCell>
-              <TableCell>Teléfono</TableCell>
-              <TableCell>Correo</TableCell>
-              <TableCell>Fecha de Entrega</TableCell>
-              <TableCell>Total</TableCell>
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {ordenes.map((orden) => (
-              <TableRow key={orden.idOrden}>
-                <TableCell>{orden.idOrden}</TableCell>
-                <TableCell>{orden.nombreCompletoOrden}</TableCell>
-                <TableCell>{orden.direccionOrden}</TableCell>
-                <TableCell>{orden.telefonoOrden}</TableCell>
-                <TableCell>{orden.correoOrden}</TableCell>
-                <TableCell>{orden.fecha_entrega}</TableCell>
-                <TableCell>{orden.total_orden}</TableCell>
-                <TableCell>
-                  <Button variant="outlined" onClick={() => verDetalles(orden)}>Ver Detalles</Button>
-                </TableCell>
+      <div>
+        <Typography variant="h4" gutterBottom>Mis Órdenes</Typography>
+        
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>ID Orden</TableCell>
+                <TableCell>Nombre</TableCell>
+                <TableCell>Dirección</TableCell>
+                <TableCell>Teléfono</TableCell>
+                <TableCell>Correo</TableCell>
+                <TableCell>Fecha de Entrega</TableCell>
+                <TableCell>Estado</TableCell>
+                <TableCell>Total</TableCell>
+                <TableCell>Acciones</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {ordenes.map((orden) => (
+                <TableRow key={orden.idOrden}>
+                  <TableCell>{orden.idOrden}</TableCell>
+                  <TableCell>{orden.nombreCompletoOrden}</TableCell>
+                  <TableCell>{orden.direccionOrden}</TableCell>
+                  <TableCell>{orden.telefonoOrden}</TableCell>
+                  <TableCell>{orden.correoOrden}</TableCell>
+                  <TableCell>{orden.fecha_entrega}</TableCell>
+                  <TableCell>{orden.nombre}</TableCell>
+                  <TableCell>{orden.total_orden}</TableCell>
+                  <TableCell>
+                    {orden.nombre === "En espera" && (
+                      <Button variant="outlined" color="error" onClick={() => handleConfirmCancel(orden)} style={{ marginRight: "1rem" }}>
+                        Cancelar Orden
+                      </Button>
+                    )}
+                    <Button variant="outlined" onClick={() => verDetalles(orden)}>Ver Detalles</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
-      {/* Modal para ver detalles de la orden */}
-      <Modal
-        open={openModal}
-        onClose={cerrarModal}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-      >
-        <Box sx={{
-          position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-          width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
-          {ordenSeleccionada && (
-            <>
-              <Typography id="modal-title" variant="h6" component="h2">
-                Detalles de la Orden {ordenSeleccionada.idOrden}
-              </Typography>
-              <Typography id="modal-description" sx={{ mt: 2 }}>
-                <strong>Nombre:</strong> {ordenSeleccionada.nombreCompletoOrden}<br />
-                <strong>Dirección:</strong> {ordenSeleccionada.direccionOrden}<br />
-                <strong>Teléfono:</strong> {ordenSeleccionada.telefonoOrden}<br />
-                <strong>Correo:</strong> {ordenSeleccionada.correoOrden}<br />
-                <strong>Fecha de Entrega:</strong> {ordenSeleccionada.fecha_entrega}<br />
-                <strong>Total:</strong> {ordenSeleccionada.total_orden}<br />
-                <h3>Productos:</h3>
-                <ul>
-                  {ordenSeleccionada.detalles.map((detalle) => (
-                    <li key={detalle.Productos_idProductos}>
-                      Producto: {detalle.Productos_idProductos.nombreProducto}<br />
-                      Cantidad: {detalle.cantidadOD}<br />
-                      Subtotal: {detalle.subtotalOD}
-                    </li>
-                  ))}
-                </ul>
-              </Typography>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={() => cancelarOrden(ordenSeleccionada.idOrden)}
-              >
-                Cancelar Orden
-              </Button>
-            </>
-          )}
-        </Box>
-      </Modal>
-    </div>
+        {/* Modal para ver detalles de la orden */}
+        <Modal
+          open={openModal}
+          onClose={cerrarModal}
+          aria-labelledby="modal-title"
+          aria-describedby="modal-description"
+        >
+          <Box sx={{
+            position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+            width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+            {ordenSeleccionada && (
+              <>
+                <Typography id="modal-title" variant="h6" component="h2">
+                  Detalles de la Orden {ordenSeleccionada.idOrden}
+                </Typography>
+                <Typography id="modal-description" sx={{ mt: 2 }}>
+                  <strong>Nombre:</strong> {ordenSeleccionada.nombreCompletoOrden}<br />
+                  <strong>Dirección:</strong> {ordenSeleccionada.direccionOrden}<br />
+                  <strong>Teléfono:</strong> {ordenSeleccionada.telefonoOrden}<br />
+                  <strong>Correo:</strong> {ordenSeleccionada.correoOrden}<br />
+                  <strong>Fecha de Entrega:</strong> {ordenSeleccionada.fecha_entrega}<br />
+                  <strong>Total:</strong> {ordenSeleccionada.total_orden}<br />
+                </Typography>
+              </>
+            )}
+          </Box>
+        </Modal>
+
+        <Dialog
+          open={openConfirmDialog}
+          onClose={handleCloseConfirmDialog}
+        >
+          <DialogTitle>Confirmación de Cancelación</DialogTitle>
+          <DialogContent>
+            <Typography>
+              ¿Estás seguro de que deseas cancelar esta orden?
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseConfirmDialog} color="primary">
+              No
+            </Button>
+            <Button 
+              onClick={() => cancelarOrden(ordenSeleccionada.idOrden)} 
+              color="secondary"
+            >
+              Sí, Cancelar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </Layout>
   );
 };
+
 
 export default OrdenesCliente;

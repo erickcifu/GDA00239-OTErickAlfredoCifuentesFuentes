@@ -8,21 +8,13 @@ const Login = () => {
     const [passwordUsuario, setpasswordUsuario] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
- const userRoles = obtenerRol();
+    const userRoles = obtenerRol();
     const handleSubmit = async (e) => {
         e.preventDefault();
         
         try {
             const response = await api.post('/auth/login', { correoUsuaro, passwordUsuario });
-             
-            setError('');
-            if (userRoles == 2) {
-              navigate('/home');
-            } else if (userRoles == 1) {
-              navigate('/homeOperador');
-            } else {
-              navigate('/');
-            }
+            navigate('/home');
             localStorage.setItem('token', response.data.token);
         } catch (err) {
             setError(err.response ? err.response.data.message : 'Error al iniciar sesión');

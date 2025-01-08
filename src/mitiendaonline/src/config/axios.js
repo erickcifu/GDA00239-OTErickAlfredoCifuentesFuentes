@@ -32,19 +32,36 @@ export const obtenerUsuario = () => {
 };
 
 export const obtenerRol = () => {
-    const token = localStorage.getItem('token'); 
+    const tokenRol = localStorage.getItem('token'); 
   
-    if (token) {
+    if (tokenRol) {
       try {
-        const decodedToken = jwtDecode(token); 
-        console.log(decodedToken); 
-        return decodedToken.rol_idRol;  
+        const decodedTokenR = jwtDecode(tokenRol); 
+        console.log(decodedTokenR); 
+        return decodedTokenR.rol_idRol;  
       } catch (error) {
         console.error("Error al decodificar el token:", error.message);
       }
     }
     
     return null;  
+};
+
+
+export const obtenerCliente = () => {
+  const tokenCliente = localStorage.getItem('token'); 
+
+  if (tokenCliente) {
+    try {
+      const decodedTokenC = jwtDecode(tokenCliente); 
+      console.log("id cliente: ", decodedTokenC); 
+      return decodedTokenC.Clientes_idClientes;  
+    } catch (error) {
+      console.error("Error al decodificar el token:", error.message);
+    }
+  }
+  
+  return null;  
 };
 
 export default api;
